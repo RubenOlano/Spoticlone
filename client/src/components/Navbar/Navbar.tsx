@@ -6,7 +6,30 @@ import logo from "../../images/logo.png";
 import search from "../../images/search.png";
 
 const Navbar = () => {
-  // Create Navbar object that contains logo centered and a search bar
+  const [hidden, setHidden] = React.useState<boolean>(true);
+  const [searchValue, setSearchValue] = React.useState<string>("");
+  const ref = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (!hidden) {
+      ref.current?.focus();
+    }
+  }, [hidden]);
+
+  const handleClick = () => {
+    setHidden((prev) => !prev);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setHidden((prev) => !prev);
+    setSearchValue("");
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
   return (
     <div className={styles.navbar}>
       <Link href="/">
@@ -20,13 +43,8 @@ const Navbar = () => {
           />
         </a>
       </Link>
-      <div className={styles.search}>
-        <input
-          type="text"
-          placeholder="Search"
-          className={styles.searchInput}
-        />
-        <button className={styles.searchButton}>
+      {hidden ? (
+        <div className={styles.search} onClick={handleClick}>
           <Image
             width={20}
             height={20}
@@ -34,8 +52,21 @@ const Navbar = () => {
             alt="search"
             className={styles.searchImg}
           />
-        </button>
-      </div>
+        </div>
+      ) : (
+        <div className={styles.search}>
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <input
+              ref={ref}
+              value={searchValue}
+              type="text"
+              placeholder="Search"
+              className={styles.searchInput}
+              onChange={handleChange}
+            />
+          </form>
+        </div>
+      )}
     </div>
   );
 };
