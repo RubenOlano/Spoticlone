@@ -32,17 +32,20 @@ const Navbar = () => {
 
   return (
     <div className={styles.navbar}>
-      <Link href="/">
-        <a className={styles.logo}>
-          <Image
-            width={100}
-            height={100}
-            src={logo}
-            alt="logo"
-            className={styles.logoImg}
-          />
-        </a>
-      </Link>
+      <div className={styles.logoContainer}>
+        <Link href="/">
+          <a className={styles.logo}>
+            <Image
+              width={100}
+              height={100}
+              src={logo}
+              alt="logo"
+              className={styles.logoImg}
+            />
+          </a>
+        </Link>
+        <h1 className={styles.title}>Spoticlone</h1>
+      </div>
       {hidden ? (
         <div className={styles.search} onClick={handleClick}>
           <Image
