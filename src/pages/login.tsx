@@ -23,7 +23,7 @@ const Login: NextPage<Props> = ({ providers }) => {
       <Image src={logo} className="w-52 mb-5" alt="logo" />
 
       {Object.values(providers).map((provider) => (
-        <div key={provider.id}>
+        <div key={provider.name}>
           <button
             onClick={() => signIn(provider.id, { callbackUrl: "/" })}
             className="bg-[#18D860] text-white p-5 rounded-full"
@@ -40,6 +40,7 @@ export default Login;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const providers = await getProviders();
+
   return {
     props: {
       providers,

@@ -8,14 +8,13 @@ import {
   SearchIcon,
   XIcon,
 } from "@heroicons/react/outline";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 const Sidebar = () => {
-  const { data: session, status } = useSession();
-  console.log(session, status);
+  // const { data: session, status } = useSession();
 
   return (
-    <div className="text-gray-500 p-5 text-sm border-r-gray-900">
+    <div className="text-gray-500 p-5 text-sm border-r-gray-900 overflow-y-scroll h-screen scrollbar-hide ">
       <div className="space-y-4">
         <button
           onClick={() => signOut()}
