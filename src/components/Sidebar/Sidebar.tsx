@@ -8,9 +8,12 @@ import {
   SearchIcon,
   XIcon,
 } from "@heroicons/react/outline";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 const Sidebar = () => {
+  const { data: session, status } = useSession();
+  console.log(session, status);
+
   return (
     <div className="text-gray-500 p-5 text-sm border-r-gray-900">
       <div className="space-y-4">
@@ -46,6 +49,8 @@ const Sidebar = () => {
           <RssIcon className="h-5 w-5 " />
           <p>Your Library</p>
         </button>
+        <hr className="border-t-[0.1px] border-gray-900" />
+
         {/* Render playlists */}
         <p className="cursor-pointer hover:text-white">Playlist Names</p>
       </div>

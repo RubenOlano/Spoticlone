@@ -16,6 +16,7 @@ const refreshAccessToken = async (token: JWT) => {
       refreshToken: refreshToken.refresh_token ?? token.refreshToken,
     };
   } catch (error) {
+    console.error(error);
     return {
       ...token,
       error,
@@ -46,12 +47,12 @@ export default NextAuth({
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
           username: account.providerAccountId,
-          accessTokenExpiresAt: account.expires_at! * 1000,
+          accessTokenExpiresAt: (account.expires_at || 0) * 1000,
         };
 
         // Return same token if it has not expired
       }
-      if (Date.now() < account!.expires_at!) {
+      if (Date.now() < (account!?.expires_at || 0) * 1000) {
         return token;
       }
 
