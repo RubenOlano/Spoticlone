@@ -8,7 +8,7 @@ import {
   SearchIcon,
   XIcon,
 } from "@heroicons/react/outline";
-import { signIn, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 const Sidebar = () => {
   return (
