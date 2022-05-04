@@ -38,6 +38,7 @@ const Sidebar = () => {
           <p>Your Library</p>
         </button>
         {/* Render playlists */}
+        <p className="cursor-pointer hover:text-white">Playlist Names</p>
       </div>
     </div>
   );
