@@ -19,7 +19,7 @@ const refreshAccessToken = async (token: JWT) => {
     console.error(error);
     return {
       ...token,
-      error,
+      error: "RefreshAccessTokenError",
     };
   }
 };
