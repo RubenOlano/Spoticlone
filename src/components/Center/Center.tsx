@@ -1,11 +1,12 @@
 import { ChevronDownIcon } from "@heroicons/react/outline";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { shuffle } from "lodash";
 import { playlistIdState, playlistState } from "../../../atoms/playlistAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useSpotify from "../../../hooks/useSpotify";
+import Songs from "../Songs/Songs";
 
 const colors = [
   "from-indigo-500",
@@ -21,7 +22,7 @@ const defaultImage =
   "https://i.scdn.co/image/ab6761610000e5eb1020c22e0ce742eca7166e65";
 
 const defaultPlaylist =
-  "https://i.scdn.co/image/ab67706c0000bebbf525d078b834f50f18a4f1d8";
+  "https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999";
 
 const Center = () => {
   const { data: session } = useSession();
@@ -46,14 +47,16 @@ const Center = () => {
         });
     }
   }, [playlistId, setPlaylist, spotifyApi]);
-  console.log(playlist);
 
   const userIMG = session?.user?.image || defaultImage;
 
   return (
-    <div className="flex-grow text-white">
+    <div className="flex-grow text-white h-screen overflow-y-scroll scrollbar-hide">
       <header className="absolute top-5 right-8">
-        <div className="flex items-center bg-black space-x-3 opacity-90 hover:opactiy-80 cursor-pointer rounded-full p-1 pr-2">
+        <div
+          onClick={() => signOut()}
+          className="flex items-center bg-black space-x-3 opacity-90 hover:opactiy-80 cursor-pointer rounded-full p-1 pr-2"
+        >
           <Image
             className="rounded-full w-10 h-10"
             src={userIMG}
@@ -75,7 +78,14 @@ const Center = () => {
           src={playlist?.images?.[0].url || defaultPlaylist}
           alt="playlist"
         />
+        <div>
+          <p>Playlist</p>
+          <h1 className="text-2xl md:text-3xl xl:text-5xl font-bold ">
+            {playlist?.name}
+          </h1>
+        </div>
       </section>
+      <Songs />
     </div>
   );
 };

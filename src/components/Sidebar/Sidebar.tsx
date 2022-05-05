@@ -6,9 +6,8 @@ import {
   PlusCircleIcon,
   RssIcon,
   SearchIcon,
-  XIcon,
 } from "@heroicons/react/outline";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import useSpotify from "../../../hooks/useSpotify";
 import { useRecoilState } from "recoil";
 import { playlistIdState } from "../../../atoms/playlistAtom";
@@ -29,18 +28,9 @@ const Sidebar = () => {
     }
   }, [session, spotifyApi]);
 
-  console.log(playlist);
-
   return (
-    <div className="text-gray-500 p-5 text-sm border-r-gray-900 overflow-y-scroll h-screen scrollbar-hide ">
+    <div className="hidden md:inline-flex text-gray-500 p-5 text-xs lg:text-sm border-r-gray-900 overflow-y-scroll h-screen scrollbar-hide sm:max-w-[12rem] lg:max-w[15-rem]">
       <div className="space-y-4">
-        <button
-          onClick={() => signOut()}
-          className="flex items-center space-x-2 hover:text-white"
-        >
-          <XIcon className="h-5 w-5" />
-          <p>Log out</p>
-        </button>
         <button className="flex items-center space-x-2 hover:text-white">
           <HomeIcon className="h-5 w-5" />
           <p>Home</p>
