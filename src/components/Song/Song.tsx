@@ -15,6 +15,7 @@ const defaultSong =
 
 const Song: FC<Props> = ({ order, track }) => {
   const spotifyApi = useSpotify();
+
   const [currentTrackId, setCurrentTrackId] =
     useRecoilState(currentTrackIdState);
   const [_isPlaying, setIsPlaying] = useRecoilState(isPlayingState);

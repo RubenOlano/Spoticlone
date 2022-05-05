@@ -29,7 +29,7 @@ const Sidebar = () => {
   }, [session, spotifyApi]);
 
   return (
-    <div className="hidden md:inline-flex text-gray-500 p-5 text-xs lg:text-sm border-r-gray-900 overflow-y-scroll h-screen scrollbar-hide sm:max-w-[12rem] lg:max-w[15-rem]">
+    <div className="hidden md:inline-flex text-gray-500 p-5 text-xs lg:text-sm border-r-gray-900 overflow-y-scroll h-screen scrollbar-hide sm:max-w-[12rem] lg:max-w[15-rem] pb-36">
       <div className="space-y-4">
         <button className="flex items-center space-x-2 hover:text-white">
           <HomeIcon className="h-5 w-5" />

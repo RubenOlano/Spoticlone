@@ -10,9 +10,9 @@ const useSongInfo = () => {
   const [songInfo, setSongInfo] = React.useState<any>();
 
   React.useEffect(() => {
-    const fetchSongInfo = async () => {
-      console.log("trackid", currentTrackId);
+    console.log("in use effect", currentTrackId);
 
+    const fetchSongInfo = async () => {
       if (currentTrackId) {
         console.log("token", spotifyApi.getAccessToken());
 
@@ -27,10 +27,10 @@ const useSongInfo = () => {
 
         setSongInfo(trackInfo);
       }
-      console.log("Trying to fetch", currentTrackId);
-
-      fetchSongInfo();
     };
+    console.log("Trying to fetch", currentTrackId);
+
+    fetchSongInfo();
   }, [currentTrackId, spotifyApi]);
 
   return songInfo;
