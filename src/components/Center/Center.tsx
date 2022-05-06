@@ -8,7 +8,7 @@ import { playlistIdState, playlistState } from "../../../atoms/playlistAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useSpotify from "../../../hooks/useSpotify";
 import Songs from "../Songs/Songs";
-import { currentTrackIdState } from "../../../atoms/songAtom";
+import { currentTrackIdState, isPlayingState } from "../../../atoms/songAtom";
 
 const colors = [
   "from-indigo-500",
@@ -32,6 +32,7 @@ const Center = () => {
   const playlistId = useRecoilValue(playlistIdState);
   const [playlist, setPlaylist] = useRecoilState(playlistState);
   const [_trackId, setTrackId] = useRecoilState(currentTrackIdState);
+  const [_playState, setPlayState] = useRecoilState(isPlayingState);
   const spotifyApi = useSpotify();
 
   useEffect(() => {
@@ -50,6 +51,7 @@ const Center = () => {
     spotifyApi.getMyCurrentPlayingTrack().then((data) => {
       setTrackId(data.body?.item?.id as string);
     });
+    setPlayState(true);
   };
 
   useEffect(() => {
