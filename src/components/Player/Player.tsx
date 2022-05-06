@@ -6,7 +6,9 @@ import {
   PlayIcon,
   FastForwardIcon,
   VolumeUpIcon,
+  ReplyIcon,
 } from "@heroicons/react/solid";
+import { debounce } from "lodash";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
@@ -41,6 +43,15 @@ const Player = () => {
     });
   };
 
+  const debouncedAdjustVolume = React.useCallback(
+    debounce((volume) => {
+      spotifyApi.setVolume(volume).catch((err) => {
+        console.log(err);
+      });
+    }, 500),
+    []
+  );
+
   React.useEffect(() => {
     if (spotifyApi.getAccessToken() && !currentTrackId) {
       const fetchCurrentTrack = async () => {
@@ -58,10 +69,15 @@ const Player = () => {
     }
   }, [currentTrackId, setCurrentTrackId, setIsPlaying, songInfo, spotifyApi]);
 
+  React.useEffect(() => {
+    if (volume > 0 && volume < 100) {
+      debouncedAdjustVolume(volume);
+    }
+  }, [debouncedAdjustVolume, volume]);
+
   return (
-    <div className="h-24 bg-gradient-to-b from-black to-gray-900 text-white">
-      {/* left */}
-      <div className="flex items-center space-x-4 grid-cols-3 text-xs md:text-base px-2 md:px-8">
+    <div className="h-24 bg-gradient-to-b from-black to-gray-900 text-white grid grid-cols-3 text-xs md:text-base px-2 md:px-8">
+      <div className="flex items-center space-x-4 ">
         <Image
           src={songInfo?.album?.images[0]?.url || defaultSong}
           className="hidden md:inline"
@@ -74,20 +90,22 @@ const Player = () => {
           <p>{songInfo?.artists?.[0]?.name}</p>
         </div>
       </div>
-      {/* Center */}
       <div className="flex items-center justify-evenly ">
         <SwitchHorizontalIcon className="button " />
         <RewindIcon className="button" />
         {isPlaying ? (
-          <PauseIcon onClick={handlePlayPause} className="button" />
+          <PauseIcon onClick={handlePlayPause} className="button w-10 h-10" />
         ) : (
-          <PlayIcon onClick={handlePlayPause} className="button" />
+          <PlayIcon onClick={handlePlayPause} className="button w-10 h-10" />
         )}
         <FastForwardIcon className="button" />
+        <ReplyIcon className="button" />
       </div>
-
       <div className="flex items-center justify-end space-x-3 md:space-x-4 pr-5">
-        <VolumeDownIcon className="button" />
+        <VolumeDownIcon
+          className="button"
+          onClick={() => volume > 0 && setVolume((prev) => prev - 10)}
+        />
         <input
           className="w-14 md:w-28"
           type="range"
@@ -96,7 +114,10 @@ const Player = () => {
           value={volume}
           onChange={(e) => setVolume(Number(e.target.value))}
         />
-        <VolumeUpIcon className="button" />
+        <VolumeUpIcon
+          className="button"
+          onClick={() => volume <= 100 && setVolume((prev) => prev + 10)}
+        />
       </div>
     </div>
   );
