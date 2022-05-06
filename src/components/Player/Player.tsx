@@ -9,7 +9,6 @@ import {
   ReplyIcon,
 } from "@heroicons/react/solid";
 import { debounce } from "lodash";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
 import { useRecoilState } from "recoil";
@@ -22,7 +21,6 @@ const defaultSong =
 
 const Player = () => {
   const spotifyApi = useSpotify();
-  const { data: session } = useSession();
   const [currentTrackId, setCurrentTrackId] =
     useRecoilState(currentTrackIdState);
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
