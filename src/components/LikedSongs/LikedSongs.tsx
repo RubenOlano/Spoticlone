@@ -8,7 +8,7 @@ const Songs = () => {
   return (
     <div className="text-white px-8 flex-col space-y-1 pb-28">
       {playlist.map((track, i) => (
-        <Song key={track.id} track={track} order={i + 1} />
+        <Song key={track.id} track={track} order={i} />
       ))}
     </div>
   );

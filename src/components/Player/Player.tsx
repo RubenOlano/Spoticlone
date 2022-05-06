@@ -13,6 +13,7 @@ import Image from "next/image";
 import React from "react";
 import { useRecoilState } from "recoil";
 import { currentTrackIdState, isPlayingState } from "../../../atoms/songAtom";
+import { volumeAtom } from "../../../atoms/volumeAtom";
 import useSongInfo from "../../../hooks/useSongInfo";
 import useSpotify from "../../../hooks/useSpotify";
 
@@ -24,7 +25,7 @@ const Player = () => {
   const [currentTrackId, setCurrentTrackId] =
     useRecoilState(currentTrackIdState);
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
-  const [volume, setVolume] = React.useState(50);
+  const [volume, setVolume] = useRecoilState(volumeAtom);
   const [shuffled, setShuffled] = React.useState(false);
 
   const songInfo = useSongInfo();
@@ -88,7 +89,14 @@ const Player = () => {
       fetchCurrentTrack();
       setVolume(50);
     }
-  }, [currentTrackId, setCurrentTrackId, setIsPlaying, songInfo, spotifyApi]);
+  }, [
+    currentTrackId,
+    setCurrentTrackId,
+    setIsPlaying,
+    setVolume,
+    songInfo,
+    spotifyApi,
+  ]);
 
   React.useEffect(() => {
     if (volume > 0 && volume < 100) {

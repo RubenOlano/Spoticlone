@@ -72,7 +72,7 @@ const Center = () => {
       <header className="absolute top-5 right-8">
         <div
           onClick={() => signOut()}
-          className="flex items-center bg-black space-x-3 opacity-90 hover:opactiy-80 cursor-pointer rounded-full p-1 pr-2"
+          className="flex items-center bg-black space-x-3 opacity-90 hover:opactiy-80 cursor-pointer rounded-full p-1 pr-2 z-10"
         >
           <Image
             className="rounded-full w-10 h-10"
@@ -106,7 +106,7 @@ const Center = () => {
         </div>
         <div className="flex flex-grow justify-end hover:cursor-pointer pr-5 ">
           <PlayIcon
-            className="button h-24 w-24 text-green-600"
+            className="button h-24 w-24 text-green-600 z-0"
             onClick={handlePlay}
           />
         </div>
