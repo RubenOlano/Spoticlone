@@ -16,7 +16,7 @@ const defaultSong =
 const Song: FC<Props> = ({ order, track }) => {
   const spotifyApi = useSpotify();
 
-  const [_currentTrackId, setCurrentTrackId] =
+  const [currentTrackId, setCurrentTrackId] =
     useRecoilState(currentTrackIdState);
   const [_isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
 
@@ -30,7 +30,11 @@ const Song: FC<Props> = ({ order, track }) => {
   return (
     <div
       onClick={playSong}
-      className="grid grid-cols-2 text-gray-500 py-4 px-5 hover:bg-gray-900 rounded-lg hover:cursor-pointer"
+      className={`grid grid-cols-2 text-gray-500 py-4 px-5  rounded-lg hover:cursor-pointer ${
+        track.track?.id === currentTrackId
+          ? "bg-green-800 text-gray-300"
+          : "hover:bg-gray-900"
+      }`}
     >
       <div className="flex items-center space-x-4">
         <p className="p-4">{order + 1}</p>

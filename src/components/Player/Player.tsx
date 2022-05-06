@@ -25,13 +25,13 @@ const Player = () => {
     useRecoilState(currentTrackIdState);
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
   const [volume, setVolume] = React.useState(50);
+  const [shuffled, setShuffled] = React.useState(false);
 
   const songInfo = useSongInfo();
-  console.log(songInfo);
 
   const handlePlayPause = () => {
     spotifyApi.getMyCurrentPlaybackState().then((data) => {
-      if (data.body.is_playing) {
+      if (data?.body?.is_playing) {
         spotifyApi.pause();
         setIsPlaying(false);
       } else {
@@ -41,12 +41,35 @@ const Player = () => {
     });
   };
 
+  const handleShuffle = () => {
+    spotifyApi.setShuffle(!shuffled).then(() => {
+      setShuffled((prev) => !prev);
+    });
+  };
+
+  const handleSkip = () => {
+    spotifyApi.skipToNext().then(() => {
+      spotifyApi.getMyCurrentPlayingTrack().then((data) => {
+        setCurrentTrackId(data.body?.item?.id as string);
+      });
+    });
+  };
+
+  const handleRewind = () => {
+    spotifyApi.skipToPrevious().then(() => {
+      spotifyApi.getMyCurrentPlayingTrack().then((data) => {
+        setCurrentTrackId(data.body?.item?.id as string);
+      });
+    });
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedAdjustVolume = React.useCallback(
     debounce((volume) => {
       spotifyApi.setVolume(volume).catch((err) => {
         console.log(err);
       });
-    }, 500),
+    }, 250),
     []
   );
 
@@ -89,14 +112,17 @@ const Player = () => {
         </div>
       </div>
       <div className="flex items-center justify-evenly ">
-        <SwitchHorizontalIcon className="button " />
-        <RewindIcon className="button" />
+        <SwitchHorizontalIcon
+          className={`button text-${shuffled ? "green-500" : "gray-500"}`}
+          onClick={() => handleShuffle()}
+        />
+        <RewindIcon className="button" onClick={() => handleRewind()} />
         {isPlaying ? (
           <PauseIcon onClick={handlePlayPause} className="button w-10 h-10" />
         ) : (
           <PlayIcon onClick={handlePlayPause} className="button w-10 h-10" />
         )}
-        <FastForwardIcon className="button" />
+        <FastForwardIcon className="button" onClick={handleSkip} />
         <ReplyIcon className="button" />
       </div>
       <div className="flex items-center justify-end space-x-3 md:space-x-4 pr-5">

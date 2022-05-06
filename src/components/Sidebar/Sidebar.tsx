@@ -54,7 +54,7 @@ const Sidebar = () => {
         </button>
         <button className="flex items-center space-x-2 hover:text-white">
           <RssIcon className="h-5 w-5 " />
-          <p>Your Library</p>
+          <p>Your Episodes</p>
         </button>
         <hr className="border-t-[0.1px] border-gray-900" />
 

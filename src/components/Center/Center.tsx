@@ -1,4 +1,5 @@
 import { ChevronDownIcon } from "@heroicons/react/outline";
+import { PlayIcon } from "@heroicons/react/solid";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useEffect } from "react";
@@ -7,6 +8,7 @@ import { playlistIdState, playlistState } from "../../../atoms/playlistAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useSpotify from "../../../hooks/useSpotify";
 import Songs from "../Songs/Songs";
+import { currentTrackIdState } from "../../../atoms/songAtom";
 
 const colors = [
   "from-indigo-500",
@@ -29,11 +31,26 @@ const Center = () => {
   const [color, setColor] = React.useState("");
   const playlistId = useRecoilValue(playlistIdState);
   const [playlist, setPlaylist] = useRecoilState(playlistState);
+  const [_trackId, setTrackId] = useRecoilState(currentTrackIdState);
   const spotifyApi = useSpotify();
 
   useEffect(() => {
     setColor(shuffle(colors).pop()!);
   }, [playlistId]);
+
+  const handlePlay = async () => {
+    await spotifyApi.play({
+      uris: [
+        ...playlist.tracks.items
+          .map((track) => track?.track?.uri as string)
+          .filter((uri) => uri.search("spotify:track") !== -1),
+      ],
+      position_ms: 0,
+    });
+    spotifyApi.getMyCurrentPlayingTrack().then((data) => {
+      setTrackId(data.body?.item?.id as string);
+    });
+  };
 
   useEffect(() => {
     if (spotifyApi.getAccessToken()) {
@@ -80,9 +97,18 @@ const Center = () => {
         />
         <div>
           <p>Playlist</p>
-          <h1 className="text-2xl md:text-3xl xl:text-5xl font-bold ">
+          <h1 className="text-2xl md:text-3xl xl:text-5xl font-bold">
             {playlist?.name}
           </h1>
+        </div>
+        <div className="flex justify-end items-center space-x-3">
+          <p>{playlist?.tracks?.total} songs</p>
+        </div>
+        <div className="flex flex-grow justify-end hover:cursor-pointer pr-5 ">
+          <PlayIcon
+            className="button h-24 w-24 text-green-600"
+            onClick={handlePlay}
+          />
         </div>
       </section>
       <Songs />
