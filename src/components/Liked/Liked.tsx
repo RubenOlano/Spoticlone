@@ -4,7 +4,7 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { shuffle } from "lodash";
-import { playlistIdState, playlistState } from "../../../atoms/playlistAtom";
+import { playlistIdState } from "../../../atoms/playlistAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useSpotify from "../../../hooks/useSpotify";
 import Songs from "../LikedSongs/LikedSongs";
@@ -31,7 +31,6 @@ const Liked = () => {
   const { data: session } = useSession();
   const [color, setColor] = React.useState("");
   const playlistId = useRecoilValue(playlistIdState);
-  const [playlist, _setPlaylist] = useRecoilState(playlistState);
   const [_trackId, setTrackId] = useRecoilState(currentTrackIdState);
   const [likedSongs, setLikedSongs] = useRecoilState(likedSongState);
   const spotifyApi = useSpotify();
