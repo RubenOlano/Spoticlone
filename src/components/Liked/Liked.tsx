@@ -8,7 +8,7 @@ import { playlistIdState } from "../../../atoms/playlistAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useSpotify from "../../../hooks/useSpotify";
 import Songs from "../LikedSongs/LikedSongs";
-import { currentTrackIdState, isPlayingState } from "../../../atoms/songAtom";
+import { currentTrackIdState } from "../../../atoms/songAtom";
 import { likedSongState } from "../../../atoms/likedAtom";
 import usePlayer from "../../../hooks/usePlayer";
 
@@ -34,7 +34,6 @@ const Liked = () => {
   const playlistId = useRecoilValue(playlistIdState);
   const [_trackId, setTrackId] = useRecoilState(currentTrackIdState);
   const [likedSongs, setLikedSongs] = useRecoilState(likedSongState);
-  const [_playState, setPlayState] = useRecoilState(isPlayingState);
   const spotifyApi = useSpotify();
   const { deviceId } = usePlayer();
 
@@ -59,7 +58,6 @@ const Liked = () => {
     spotifyApi.getMyCurrentPlayingTrack().then((data) => {
       setTrackId(data.body?.item?.id as string);
     });
-    setPlayState(true);
   };
 
   useEffect(() => {
