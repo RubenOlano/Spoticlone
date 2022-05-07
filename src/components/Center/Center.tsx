@@ -36,6 +36,7 @@ const Center = () => {
   const [_playState, setPlayState] = useRecoilState(isPlayingState);
   const spotifyApi = useSpotify();
   const { deviceId } = usePlayer();
+  console.log(deviceId);
 
   useEffect(() => {
     setColor(shuffle(colors).pop()!);

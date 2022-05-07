@@ -26,11 +26,18 @@ const usePlayer = () => {
 
       player.addListener("ready", ({ device_id }) => {
         setDeviceId(device_id);
+        spotifyApi.setClientId(device_id);
+        spotifyApi.getMyCurrentPlayingTrack().then((track) => {
+          if (track) {
+            spotifyApi.transferMyPlayback([device_id]);
+          }
+        });
       });
 
       player.connect();
     };
   }, [spotifyApi]);
+
   return { player, deviceId };
 };
 
