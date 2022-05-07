@@ -6,7 +6,7 @@ import useSpotify from "./useSpotify";
 const usePlayer = () => {
   const [player, setPlayer] = React.useState<Spotify.Player>();
   const [deviceId, setDeviceId] = React.useState<string>();
-  const [volume, setVolume] = useRecoilState(volumeAtom);
+  const [volume, _setVolume] = useRecoilState(volumeAtom);
   const spotifyApi = useSpotify();
 
   React.useEffect(() => {
