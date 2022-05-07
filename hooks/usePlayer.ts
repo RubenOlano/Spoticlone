@@ -1,9 +1,12 @@
 import React from "react";
+import { useRecoilState } from "recoil";
+import { volumeAtom } from "../atoms/volumeAtom";
 import useSpotify from "./useSpotify";
 
 const usePlayer = () => {
   const [player, setPlayer] = React.useState<Spotify.Player>();
   const [deviceId, setDeviceId] = React.useState<string>();
+  const [volume, setVolume] = useRecoilState(volumeAtom);
   const spotifyApi = useSpotify();
 
   React.useEffect(() => {
@@ -19,7 +22,7 @@ const usePlayer = () => {
         getOAuthToken: (cb) => {
           cb(spotifyApi.getAccessToken() as string);
         },
-        volume: 0.1,
+        volume: volume / 100,
       });
 
       setPlayer(player);
@@ -36,7 +39,7 @@ const usePlayer = () => {
 
       player.connect();
     };
-  }, [spotifyApi]);
+  }, [spotifyApi, volume]);
 
   return { player, deviceId };
 };
