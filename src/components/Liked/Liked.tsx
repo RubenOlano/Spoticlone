@@ -10,6 +10,7 @@ import useSpotify from "../../../hooks/useSpotify";
 import Songs from "../LikedSongs/LikedSongs";
 import { currentTrackIdState, isPlayingState } from "../../../atoms/songAtom";
 import { likedSongState } from "../../../atoms/likedAtom";
+import usePlayer from "../../../hooks/usePlayer";
 
 const colors = [
   "from-indigo-500",
@@ -35,12 +36,17 @@ const Liked = () => {
   const [likedSongs, setLikedSongs] = useRecoilState(likedSongState);
   const [_playState, setPlayState] = useRecoilState(isPlayingState);
   const spotifyApi = useSpotify();
+  const { deviceId } = usePlayer();
 
   useEffect(() => {
     setColor(shuffle(colors).pop()!);
   }, [playlistId]);
 
   const handlePlay = async () => {
+    new Spotify.Player({
+      name: "Spotify Player",
+      getOAuthToken: (cb) => cb(session?.accessToken as string),
+    });
     await spotifyApi.play({
       uris: [
         ...likedSongs
@@ -48,6 +54,7 @@ const Liked = () => {
           .filter((uri) => uri.search("spotify:track") !== -1),
       ],
       position_ms: 0,
+      device_id: deviceId,
     });
     spotifyApi.getMyCurrentPlayingTrack().then((data) => {
       setTrackId(data.body?.item?.id as string);

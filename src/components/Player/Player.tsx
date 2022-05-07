@@ -14,6 +14,7 @@ import React from "react";
 import { useRecoilState } from "recoil";
 import { currentTrackIdState, isPlayingState } from "../../../atoms/songAtom";
 import { volumeAtom } from "../../../atoms/volumeAtom";
+import usePlayer from "../../../hooks/usePlayer";
 import useSongInfo from "../../../hooks/useSongInfo";
 import useSpotify from "../../../hooks/useSpotify";
 
@@ -27,11 +28,13 @@ const Player = () => {
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
   const [volume, setVolume] = useRecoilState(volumeAtom);
   const [shuffled, setShuffled] = React.useState(false);
+  const { player } = usePlayer();
 
   const songInfo = useSongInfo();
 
   const handlePlayPause = () => {
     spotifyApi.getMyCurrentPlaybackState().then((data) => {
+      player?.togglePlay();
       if (data?.body?.is_playing) {
         spotifyApi.pause();
         setIsPlaying(false);

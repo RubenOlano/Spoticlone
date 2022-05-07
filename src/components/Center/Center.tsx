@@ -9,6 +9,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import useSpotify from "../../../hooks/useSpotify";
 import Songs from "../Songs/Songs";
 import { currentTrackIdState, isPlayingState } from "../../../atoms/songAtom";
+import usePlayer from "../../../hooks/usePlayer";
 
 const colors = [
   "from-indigo-500",
@@ -34,6 +35,7 @@ const Center = () => {
   const [_trackId, setTrackId] = useRecoilState(currentTrackIdState);
   const [_playState, setPlayState] = useRecoilState(isPlayingState);
   const spotifyApi = useSpotify();
+  const { deviceId } = usePlayer();
 
   useEffect(() => {
     setColor(shuffle(colors).pop()!);
@@ -47,6 +49,7 @@ const Center = () => {
           .filter((uri) => uri.search("spotify:track") !== -1),
       ],
       position_ms: 0,
+      device_id: deviceId,
     });
     spotifyApi.getMyCurrentPlayingTrack().then((data) => {
       setTrackId(data.body?.item?.id as string);

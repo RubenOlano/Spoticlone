@@ -12,6 +12,7 @@
     "@heroicons/react": "^1.0.6",
     "@types/lodash": "^4.14.182",
     "@types/spotify-web-api-node": "^5.0.7",
+    "@types/spotify-web-playback-sdk": "^0.1.12",
     "lodash": "^4.17.21",
     "next": "12.1.6",
     "next-auth": "^4.3.4",
