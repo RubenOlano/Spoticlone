@@ -41,7 +41,7 @@ const Song: FC<Props> = ({ order, track }) => {
   return (
     <div
       onClick={playSong}
-      className={`grid grid-cols-2 text-gray-500 py-4 px-5  rounded-lg hover:cursor-pointer ${
+      className={`grid grid-cols-2 text-gray-500 py-4 px-5 -z-10  rounded-lg hover:cursor-pointer ${
         track.track?.id === currentTrackId
           ? "bg-green-800 text-gray-300"
           : "hover:bg-gray-900"
@@ -54,6 +54,7 @@ const Song: FC<Props> = ({ order, track }) => {
           width={40}
           src={track.track?.album.images[0]?.url || defaultSong}
           alt={track?.track?.name}
+          className="block"
         />
         <div>
           <p className="w-36 lg:w-64 text-white truncate">

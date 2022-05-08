@@ -3,8 +3,8 @@ import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import React from "react";
-import Liked from "../components/Liked/Liked";
 import Player from "../components/Player/Player";
+import Search from "../components/Search/Search";
 import Sidebar from "../components/Sidebar/Sidebar";
 
 interface Props {
@@ -15,12 +15,12 @@ const Home: NextPage<Props> = () => {
   return (
     <>
       <Head>
-        <title>Spoticlone - Top Songs</title>
+        <title>Spoticlone - Search</title>
       </Head>
       <div className="bg-black h-screen overflow-hidden">
         <main className="flex ">
           <Sidebar />
-          <Liked />
+          <Search />
         </main>
         <div className="sticky bottom-0">
           <Player />
