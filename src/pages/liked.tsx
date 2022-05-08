@@ -15,7 +15,7 @@ const Home: NextPage<Props> = () => {
   return (
     <>
       <Head>
-        <title>Spoticlone - Liked</title>
+        <title>Spoticlone - Top Songs</title>
       </Head>
       <div className="bg-black h-screen overflow-hidden">
         <main className="flex ">
