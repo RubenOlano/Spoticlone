@@ -34,7 +34,7 @@ const Song: FC<Props> = ({ order, track }) => {
 
     setIsPlaying(true);
     spotifyApi.play({ uris: [track?.uri as string] }).catch((error) => {
-      toast(error.message, toastOptions);
+      toast("Error playing track: " + error.message, toastOptions);
     });
   };
 

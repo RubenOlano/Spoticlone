@@ -42,15 +42,19 @@ const Player = () => {
   const handlePlayPause = () => {
     spotifyApi.getMyCurrentPlaybackState().then((data) => {
       if (data?.body?.is_playing) {
-        spotifyApi.pause().catch((error) => {
-          toast(error.message, toastOptions);
-        });
-        setIsPlaying(false);
+        spotifyApi
+          .pause()
+          .catch((error) => {
+            toast("Error pausing: " + error.message, toastOptions);
+          })
+          .then(() => setIsPlaying(false));
       } else {
-        spotifyApi.play().catch((error) => {
-          toast(error.message, toastOptions);
-        });
-        setIsPlaying(true);
+        spotifyApi
+          .play()
+          .catch((error) => {
+            toast("Error playing: " + error.message, toastOptions);
+          })
+          .then(() => setIsPlaying(true));
       }
     });
   };
@@ -62,7 +66,7 @@ const Player = () => {
         setShuffled((prev) => !prev);
       })
       .catch((error) => {
-        toast(error.message, toastOptions);
+        toast("Error shuffling" + error.message, toastOptions);
       });
   };
 
@@ -76,11 +80,11 @@ const Player = () => {
             setCurrentTrackId(data.body?.item?.id as string);
           })
           .catch((error) => {
-            toast(error.message, toastOptions);
+            toast("Error playing next track: " + error.message, toastOptions);
           });
       })
       .catch((error) => {
-        toast(error.message, toastOptions);
+        toast("Error skipping: " + error.message, toastOptions);
       });
   };
 
@@ -94,11 +98,11 @@ const Player = () => {
             setCurrentTrackId(data.body?.item?.id as string);
           })
           .catch((error) => {
-            toast(error.message, toastOptions);
+            toast("Error playing next track: " + error.message, toastOptions);
           });
       })
       .catch((error) => {
-        toast(error.message, toastOptions);
+        toast("Error rewinding: " + error.message, toastOptions);
       });
   };
 
@@ -106,7 +110,7 @@ const Player = () => {
   const debouncedAdjustVolume = React.useCallback(
     debounce((volume) => {
       spotifyApi.setVolume(volume).catch((err) => {
-        toast(err.message, toastOptions);
+        toast("Error setting volume: " + err.message, toastOptions);
       });
     }, 250),
     []
@@ -122,23 +126,26 @@ const Player = () => {
               setCurrentTrackId(data.body?.item?.id as string);
             })
             .catch((error) => {
-              toast(error.message, toastOptions);
+              toast("Setting Track: " + error.message, toastOptions);
             });
           spotifyApi
             .getMyCurrentPlaybackState()
             .then((data) => {
               setIsPlaying(data.body?.is_playing);
+              setShuffled(data.body?.shuffle_state);
+              isPlaying &&
+                setVolume(data.body?.device?.volume_percent as number);
             })
             .catch((error) => {
-              toast(error.message, toastOptions);
+              toast("Fetching playback state: " + error.message, toastOptions);
             });
         }
       };
       fetchCurrentTrack();
-      setVolume(50);
     }
   }, [
     currentTrackId,
+    isPlaying,
     setCurrentTrackId,
     setIsPlaying,
     setVolume,
@@ -147,10 +154,10 @@ const Player = () => {
   ]);
 
   React.useEffect(() => {
-    if (volume > 0 && volume < 100) {
+    if (volume > 0 && volume < 100 && isPlaying) {
       debouncedAdjustVolume(volume);
     }
-  }, [debouncedAdjustVolume, volume]);
+  }, [debouncedAdjustVolume, isPlaying, volume]);
 
   return (
     <div className="h-24 bg-gradient-to-b from-black to-gray-900 text-white grid grid-cols-3 text-xs md:text-base px-2 md:px-8">

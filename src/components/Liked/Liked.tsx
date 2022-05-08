@@ -9,7 +9,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import useSpotify from "../../../hooks/useSpotify";
 import Songs from "../LikedSongs/LikedSongs";
 import { currentTrackIdState } from "../../../atoms/songAtom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast, ToastContainer, ToastOptions } from "react-toastify";
 import { likedSongState } from "../../../atoms/likedAtom";
 
 const colors = [
@@ -27,6 +27,15 @@ const defaultImage =
 
 const defaultPlaylist =
   "https://i.pinimg.com/originals/fe/5c/36/fe5c36b8b4cbaa728f3c03a311e002cb.png";
+
+const toastOptions: ToastOptions = {
+  theme: "colored",
+  type: "error",
+  autoClose: 5000,
+  closeButton: true,
+  position: "bottom-right",
+  pauseOnHover: false,
+};
 
 const Liked = () => {
   const { data: session } = useSession();
@@ -54,13 +63,7 @@ const Liked = () => {
         setTrackId(data.body?.item?.id as string);
       });
     } catch (error: any) {
-      toast(error.message, {
-        type: "error",
-        autoClose: 5000,
-        closeButton: true,
-        position: "bottom-right",
-        pauseOnHover: false,
-      });
+      toast("Error fetching track: " + error.message, toastOptions);
     }
   };
 

@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import { shuffle } from "lodash";
 import { playlistIdState, playlistState } from "../../../atoms/playlistAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { toast } from "react-toastify";
+import { toast, ToastOptions } from "react-toastify";
 import useSpotify from "../../../hooks/useSpotify";
 import Songs from "../Songs/Songs";
 import { currentTrackIdState } from "../../../atoms/songAtom";
@@ -25,6 +25,15 @@ const defaultImage =
 
 const defaultPlaylist =
   "https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999";
+
+const toastOptions: ToastOptions = {
+  theme: "colored",
+  type: "error",
+  autoClose: 5000,
+  closeButton: true,
+  position: "bottom-right",
+  pauseOnHover: false,
+};
 
 const Center = () => {
   const { data: session } = useSession();
@@ -52,14 +61,7 @@ const Center = () => {
         setTrackId(data.body?.item?.id as string);
       });
     } catch (error: any) {
-      toast(error.message, {
-        theme: "colored",
-        type: "error",
-        autoClose: 5000,
-        closeButton: true,
-        position: "bottom-right",
-        pauseOnHover: false,
-      });
+      toast("Error playing tracks: " + error.message, toastOptions);
     }
   };
 
@@ -71,7 +73,7 @@ const Center = () => {
           setPlaylist(data.body);
         })
         .catch((err) => {
-          console.log(err);
+          toast("Error getting playlist: " + err.message, toastOptions);
         });
     }
   }, [playlistId, setPlaylist, spotifyApi]);
