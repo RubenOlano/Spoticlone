@@ -12,16 +12,17 @@ interface Props {
 
 const Home: NextPage<Props> = () => {
   return (
-    <div className="bg-black h-screen overflow-hidden">
-      <main className="flex ">
-        <Sidebar />
-        <Center />
-      </main>
-
-      <div className="sticky bottom-0">
-        <Player />
+    <>
+      <div className="bg-black h-screen overflow-hidden">
+        <main className="flex ">
+          <Sidebar />
+          <Center />
+        </main>
+        <div className="sticky bottom-0">
+          <Player />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

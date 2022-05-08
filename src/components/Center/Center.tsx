@@ -6,10 +6,10 @@ import React, { useEffect } from "react";
 import { shuffle } from "lodash";
 import { playlistIdState, playlistState } from "../../../atoms/playlistAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
+import { toast } from "react-toastify";
 import useSpotify from "../../../hooks/useSpotify";
 import Songs from "../Songs/Songs";
 import { currentTrackIdState } from "../../../atoms/songAtom";
-
 const colors = [
   "from-indigo-500",
   "from-pink-500",
@@ -28,7 +28,7 @@ const defaultPlaylist =
 
 const Center = () => {
   const { data: session } = useSession();
-  const [color, setColor] = React.useState("");
+  const [color, setColor] = React.useState<String>("");
   const playlistId = useRecoilValue(playlistIdState);
   const [playlist, setPlaylist] = useRecoilState(playlistState);
   const [_trackId, setTrackId] = useRecoilState(currentTrackIdState);
@@ -39,17 +39,28 @@ const Center = () => {
   }, [playlistId]);
 
   const handlePlay = async () => {
-    await spotifyApi.play({
-      uris: [
-        ...playlist.tracks.items
-          .map((track) => track?.track?.uri as string)
-          .filter((uri) => uri.search("spotify:track") !== -1),
-      ],
-      position_ms: 0,
-    });
-    spotifyApi.getMyCurrentPlayingTrack().then((data) => {
-      setTrackId(data.body?.item?.id as string);
-    });
+    try {
+      await spotifyApi.play({
+        uris: [
+          ...playlist.tracks.items
+            .map((track) => track?.track?.uri as string)
+            .filter((uri) => uri.search("spotify:track") !== -1),
+        ],
+        position_ms: 0,
+      });
+      spotifyApi.getMyCurrentPlayingTrack().then((data) => {
+        setTrackId(data.body?.item?.id as string);
+      });
+    } catch (error: any) {
+      toast(error.message, {
+        theme: "colored",
+        type: "error",
+        autoClose: 5000,
+        closeButton: true,
+        position: "bottom-right",
+        pauseOnHover: false,
+      });
+    }
   };
 
   useEffect(() => {

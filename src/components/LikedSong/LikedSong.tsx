@@ -4,6 +4,7 @@ import { useRecoilState } from "recoil";
 import { millisToMinutesAndSeconds } from "../../../lib/time";
 import { currentTrackIdState, isPlayingState } from "../../../atoms/songAtom";
 import useSpotify from "../../../hooks/useSpotify";
+import { toast, ToastOptions } from "react-toastify";
 
 interface Props {
   order: number;
@@ -12,6 +13,14 @@ interface Props {
 
 const defaultSong =
   "https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999";
+
+const toastOptions: ToastOptions = {
+  autoClose: 5000,
+  closeButton: true,
+  position: "bottom-right",
+  theme: "colored",
+  type: "error",
+};
 
 const Song: FC<Props> = ({ order, track }) => {
   const spotifyApi = useSpotify();
@@ -24,7 +33,9 @@ const Song: FC<Props> = ({ order, track }) => {
     setCurrentTrackId(track?.id as string);
 
     setIsPlaying(true);
-    spotifyApi.play({ uris: [track?.uri as string] });
+    spotifyApi.play({ uris: [track?.uri as string] }).catch((error) => {
+      toast(error.message, toastOptions);
+    });
   };
 
   return (

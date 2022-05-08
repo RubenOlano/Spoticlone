@@ -9,8 +9,8 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import useSpotify from "../../../hooks/useSpotify";
 import Songs from "../LikedSongs/LikedSongs";
 import { currentTrackIdState } from "../../../atoms/songAtom";
+import { toast, ToastContainer } from "react-toastify";
 import { likedSongState } from "../../../atoms/likedAtom";
-import usePlayer from "../../../hooks/usePlayer";
 
 const colors = [
   "from-indigo-500",
@@ -35,35 +35,39 @@ const Liked = () => {
   const [_trackId, setTrackId] = useRecoilState(currentTrackIdState);
   const [likedSongs, setLikedSongs] = useRecoilState(likedSongState);
   const spotifyApi = useSpotify();
-  const { deviceId } = usePlayer();
 
   useEffect(() => {
     setColor(shuffle(colors).pop()!);
   }, [playlistId]);
 
   const handlePlay = async () => {
-    new Spotify.Player({
-      name: "Spotify Player",
-      getOAuthToken: (cb) => cb(session?.accessToken as string),
-    });
-    await spotifyApi.play({
-      uris: [
-        ...likedSongs
-          .map((track) => track?.uri as string)
-          .filter((uri) => uri.search("spotify:track") !== -1),
-      ],
-      position_ms: 0,
-      device_id: deviceId,
-    });
-    spotifyApi.getMyCurrentPlayingTrack().then((data) => {
-      setTrackId(data.body?.item?.id as string);
-    });
+    try {
+      await spotifyApi.play({
+        uris: [
+          ...likedSongs
+            .map((track) => track?.uri as string)
+            .filter((uri) => uri.search("spotify:track") !== -1),
+        ],
+        position_ms: 0,
+      });
+      spotifyApi.getMyCurrentPlayingTrack().then((data) => {
+        setTrackId(data.body?.item?.id as string);
+      });
+    } catch (error: any) {
+      toast(error.message, {
+        type: "error",
+        autoClose: 5000,
+        closeButton: true,
+        position: "bottom-right",
+        pauseOnHover: false,
+      });
+    }
   };
 
   useEffect(() => {
     if (spotifyApi.getAccessToken()) {
       spotifyApi.getMyTopTracks({ limit: 50 }).then((data) => {
-        setLikedSongs(data.body.items);
+        setLikedSongs(data.body?.items);
       });
     }
   }, [setLikedSongs, spotifyApi]);
@@ -112,6 +116,17 @@ const Liked = () => {
         </div>
       </section>
       <Songs />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />{" "}
     </div>
   );
 };

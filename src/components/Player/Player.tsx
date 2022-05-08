@@ -11,6 +11,7 @@ import {
 import { debounce } from "lodash";
 import Image from "next/image";
 import React from "react";
+import { toast, ToastContainer, ToastOptions } from "react-toastify";
 import { useRecoilState } from "recoil";
 import { currentTrackIdState, isPlayingState } from "../../../atoms/songAtom";
 import { volumeAtom } from "../../../atoms/volumeAtom";
@@ -19,6 +20,14 @@ import useSpotify from "../../../hooks/useSpotify";
 
 const defaultSong =
   "https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999";
+
+const toastOptions: ToastOptions = {
+  autoClose: 5000,
+  closeButton: true,
+  position: "bottom-right",
+  theme: "colored",
+  type: "error",
+};
 
 const Player = () => {
   const spotifyApi = useSpotify();
@@ -33,42 +42,71 @@ const Player = () => {
   const handlePlayPause = () => {
     spotifyApi.getMyCurrentPlaybackState().then((data) => {
       if (data?.body?.is_playing) {
-        spotifyApi.pause();
+        spotifyApi.pause().catch((error) => {
+          toast(error.message, toastOptions);
+        });
         setIsPlaying(false);
       } else {
-        spotifyApi.play();
+        spotifyApi.play().catch((error) => {
+          toast(error.message, toastOptions);
+        });
         setIsPlaying(true);
       }
     });
   };
 
   const handleShuffle = () => {
-    spotifyApi.setShuffle(!shuffled).then(() => {
-      setShuffled((prev) => !prev);
-    });
+    spotifyApi
+      .setShuffle(!shuffled)
+      .then(() => {
+        setShuffled((prev) => !prev);
+      })
+      .catch((error) => {
+        toast(error.message, toastOptions);
+      });
   };
 
   const handleSkip = () => {
-    spotifyApi.skipToNext().then(() => {
-      spotifyApi.getMyCurrentPlayingTrack().then((data) => {
-        setCurrentTrackId(data.body?.item?.id as string);
+    spotifyApi
+      .skipToNext()
+      .then(() => {
+        spotifyApi
+          .getMyCurrentPlayingTrack()
+          .then((data) => {
+            setCurrentTrackId(data.body?.item?.id as string);
+          })
+          .catch((error) => {
+            toast(error.message, toastOptions);
+          });
+      })
+      .catch((error) => {
+        toast(error.message, toastOptions);
       });
-    });
   };
 
   const handleRewind = () => {
-    spotifyApi.skipToPrevious().then(() => {
-      spotifyApi.getMyCurrentPlayingTrack().then((data) => {
-        setCurrentTrackId(data.body?.item?.id as string);
+    spotifyApi
+      .skipToPrevious()
+      .then(() => {
+        spotifyApi
+          .getMyCurrentPlayingTrack()
+          .then((data) => {
+            setCurrentTrackId(data.body?.item?.id as string);
+          })
+          .catch((error) => {
+            toast(error.message, toastOptions);
+          });
+      })
+      .catch((error) => {
+        toast(error.message, toastOptions);
       });
-    });
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedAdjustVolume = React.useCallback(
     debounce((volume) => {
       spotifyApi.setVolume(volume).catch((err) => {
-        console.log(err);
+        toast(err.message, toastOptions);
       });
     }, 250),
     []
@@ -78,12 +116,22 @@ const Player = () => {
     if (spotifyApi.getAccessToken() && !currentTrackId) {
       const fetchCurrentTrack = async () => {
         if (!songInfo) {
-          spotifyApi.getMyCurrentPlayingTrack().then((data) => {
-            setCurrentTrackId(data.body?.item?.id as string);
-          });
-          spotifyApi.getMyCurrentPlaybackState().then((data) => {
-            setIsPlaying(data.body?.is_playing);
-          });
+          spotifyApi
+            .getMyCurrentPlayingTrack()
+            .then((data) => {
+              setCurrentTrackId(data.body?.item?.id as string);
+            })
+            .catch((error) => {
+              toast(error.message, toastOptions);
+            });
+          spotifyApi
+            .getMyCurrentPlaybackState()
+            .then((data) => {
+              setIsPlaying(data.body?.is_playing);
+            })
+            .catch((error) => {
+              toast(error.message, toastOptions);
+            });
         }
       };
       fetchCurrentTrack();
@@ -151,6 +199,7 @@ const Player = () => {
           onClick={() => volume <= 100 && setVolume((prev) => prev + 10)}
         />
       </div>
+      <ToastContainer />
     </div>
   );
 };
