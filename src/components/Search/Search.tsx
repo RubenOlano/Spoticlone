@@ -6,6 +6,13 @@ import { useSetRecoilState } from "recoil";
 import { songSearchState } from "../../../atoms/playlistAtom";
 import useSpotify from "../../../hooks/useSpotify";
 import Songs from "../SearchSongs/SearchSongs";
+import { searchArtistState } from "../../../atoms/searchAtom";
+import Artists from "../Artists/Artists";
+import { XIcon } from "@heroicons/react/solid";
+
+interface Searches {
+  filter: "songs" | "artists" | "playlists";
+}
 
 const defaultImage =
   "https://i.scdn.co/image/ab6761610000e5eb1020c22e0ce742eca7166e65";
@@ -13,7 +20,9 @@ const defaultImage =
 const Search = () => {
   const { data: session } = useSession();
   const [search, setSearch] = React.useState("");
+  const [searches, setSearches] = React.useState<Searches["filter"]>();
   const setSearchResults = useSetRecoilState(songSearchState);
+  const setArtist = useSetRecoilState(searchArtistState);
   const spotifyApi = useSpotify();
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -24,13 +33,12 @@ const Search = () => {
     setSearch("");
     spotifyApi.searchTracks(search).then((res) => {
       setSearchResults(res.body);
-      console.log(res.body);
     });
-    spotifyApi.searchAlbums(search).then((res) => {
-      console.log(res.body);
-    });
+    // spotifyApi.searchAlbums(search).then((res) => {
+    //   console.log(res.body);
+    // });
     spotifyApi.searchArtists(search).then((res) => {
-      console.log(res.body);
+      setArtist(res.body);
     });
     e.preventDefault();
   };
@@ -40,7 +48,7 @@ const Search = () => {
   return (
     <div className="flex-grow text-white h-screen overflow-y-scroll scrollbar-hide">
       <header className="absolute flex flex-grow justify-evenly bg-black w-[85%] z-50">
-        <div className="my-2 mx-3 w-full pr-2 pt-4 justify-start">
+        <div className="my-5 mx-3 w-full pr-2 pt-4 justify-start">
           <SearchCircleIcon className="absolute h-10 stroke-black" />
           <form className="mb-5" onSubmit={handleSubmit}>
             <input
@@ -51,6 +59,32 @@ const Search = () => {
               placeholder="Search"
             />
           </form>
+          <div className="flex text-center text-white justify-evenly text-2xl">
+            <h1
+              onClick={() => setSearches("songs")}
+              className="button hover:text-gray-500"
+            >
+              Songs
+            </h1>
+            <h1
+              onClick={() => setSearches("artists")}
+              className="button hover:text-gray-500"
+            >
+              Artists
+            </h1>
+            <h1
+              onClick={() => setSearches("playlists")}
+              className="button hover:text-gray-500"
+            >
+              Albums
+            </h1>
+            <h1
+              onClick={() => setSearches(undefined)}
+              className="button hover:text-gray-500 justify-center"
+            >
+              <XIcon />
+            </h1>
+          </div>
         </div>
         <div
           onClick={() => signOut()}
@@ -67,7 +101,16 @@ const Search = () => {
           <ChevronDownIcon className="h-5 w-5" />
         </div>
       </header>
-      <Songs />
+      <div className="pt-16">
+        {searches === "songs" && <Songs />}
+        {searches === "artists" && <Artists />}
+        {searches === undefined && (
+          <>
+            <Artists />
+            <Songs />
+          </>
+        )}
+      </div>
     </div>
   );
 };

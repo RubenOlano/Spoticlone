@@ -35,7 +35,7 @@ const Player = () => {
     useRecoilState(currentTrackIdState);
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
   const [volume, setVolume] = useRecoilState(volumeAtom);
-  const [shuffled, setShuffled] = React.useState(false);
+  const [shuffled, setShuffled] = React.useState<boolean>();
 
   const songInfo = useSongInfo();
 
@@ -133,8 +133,7 @@ const Player = () => {
             .then((data) => {
               setIsPlaying(data.body?.is_playing);
               setShuffled(data.body?.shuffle_state);
-              isPlaying &&
-                setVolume(data.body?.device?.volume_percent as number);
+              setVolume(data.body?.device?.volume_percent as number);
             })
             .catch((error) => {
               toast("Fetching playback state: " + error.message, toastOptions);
@@ -176,7 +175,7 @@ const Player = () => {
       </div>
       <div className="flex items-center justify-evenly ">
         <SwitchHorizontalIcon
-          className={`button text-${shuffled ? "green-500" : "gray-500"}`}
+          className={`button ${shuffled ? "text-green-500" : "text-gray-500"}`}
           onClick={() => handleShuffle()}
         />
         <RewindIcon className="button" onClick={() => handleRewind()} />
